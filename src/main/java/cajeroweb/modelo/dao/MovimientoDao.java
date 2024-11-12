@@ -5,7 +5,7 @@ import java.util.List;
 import cajeroweb.modelo.entities.Movimiento;
 
 public interface MovimientoDao {
-	Movimiento findById(long idProducto);
+	Movimiento findById(int idMovimiento);
 	List<Movimiento> findAll();
 	
 	int insertOne(Movimiento movimiento);

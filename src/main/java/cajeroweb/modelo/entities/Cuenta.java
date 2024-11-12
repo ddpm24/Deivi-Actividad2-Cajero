@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -24,6 +26,7 @@ public class Cuenta implements Serializable {
 	@Column(name="tipo_cuenta")
 	private String tipoCuenta;
 	
+	@JsonBackReference
 	@OneToMany(mappedBy = "cuenta")
     private List<Movimiento> movimientos = new ArrayList<>();
 	

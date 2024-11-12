@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -30,6 +32,7 @@ public class Movimiento implements Serializable {
 	private double cantidad;
 	private String operacion;
 	
+	@JsonBackReference
 	@ManyToOne
 	@JoinColumn(name = "id_cuenta")
 	private Cuenta cuenta;
