@@ -1,10 +1,13 @@
 package cajeroweb.modelo.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
 @Entity
@@ -20,6 +23,8 @@ public class Cuenta implements Serializable {
 	@Column(name="tipo_cuenta")
 	private String tipoCuenta;
 	
+	@OneToMany(mappedBy = "cuenta")
+    private List<Movimiento> movimientos = new ArrayList<>();
 	
 	public Cuenta() {
 		super();
