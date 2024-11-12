@@ -3,6 +3,7 @@ package cajeroweb.modelo.entities;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,14 +31,13 @@ public class Cuenta implements Serializable {
 		super();
 	}
 
-
-	public Cuenta(long idCuenta, double saldo, String tipoCuenta) {
+	public Cuenta(long idCuenta, double saldo, String tipoCuenta, List<Movimiento> movimientos) {
 		super();
 		this.idCuenta = idCuenta;
 		this.saldo = saldo;
 		this.tipoCuenta = tipoCuenta;
+		this.movimientos = movimientos;
 	}
-
 
 	public long getIdCuenta() {
 		return idCuenta;
@@ -73,6 +73,30 @@ public class Cuenta implements Serializable {
 		return serialVersionUID;
 	}
 
+	
+	public List<Movimiento> getMovimientos() {
+		return movimientos;
+	}
+
+	public void setMovimientos(List<Movimiento> movimientos) {
+		this.movimientos = movimientos;
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(idCuenta);
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!(obj instanceof Cuenta))
+			return false;
+		Cuenta other = (Cuenta) obj;
+		return idCuenta == other.idCuenta;
+	}
 
 	@Override
 	public String toString() {
