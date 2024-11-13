@@ -106,8 +106,25 @@ public class Cuenta implements Serializable {
 		return "Cuenta [idCuenta=" + idCuenta + ", saldo=" + saldo + ", tipoCuenta=" + tipoCuenta + "]";
 	}
 			
-			
+	public void ingresar(int monto) {
+		saldo += monto;
+	}
 	
+	public boolean extraer(int monto) {
+		if (monto <= saldo) {
+			saldo -= monto;
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean transferir(int monto, Cuenta cuentaDestino) {
+		if (extraer(monto)) {
+			cuentaDestino.ingresar(monto);
+			return true;
+		}
+		return false;
+	}
 	
 	
 }
