@@ -57,12 +57,11 @@ public class HomeController {
 	
 	@GetMapping("/movimientos/all")
 	public String buscarTodosMovimientos(Model model) {
-	    // Obtiene la lista de movimientos desde la base de datos
+	 
 	    List<Movimiento> movimientos = movimientoDao.findAll();
 	    model.addAttribute("movimientos", movimientos);
 
-	    // Devuelve la vista que contiene la tabla de movimientos (sin redirección)
-	    return "Menu"; // Asegúrate de que "movimientos" sea la plantilla con la tabla
+	    return "Menu"; 
 	}
 	
 	
