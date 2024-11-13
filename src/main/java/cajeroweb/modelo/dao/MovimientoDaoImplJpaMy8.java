@@ -60,4 +60,10 @@ public class MovimientoDaoImplJpaMy8 implements MovimientoDao {
 		return 0;
 	}
 
+	@Override
+	public List<Movimiento> buscarMovimientosPorIdCuenta(long idCuenta) {
+		// TODO Auto-generated method stub
+		return mrepo.finAllByIdCuenta(idCuenta);
+	}
+
 }

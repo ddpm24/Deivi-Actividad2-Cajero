@@ -207,7 +207,7 @@
         <a href="javascript:void(0)" onclick="openModal('ingresarModal')">Ingresar</a>
         <a href="javascript:void(0)" onclick="openModal('extraerModal')">Extraer</a>
         <a th:href="@{/movimientos/all}">Ver Movimientos</a>
-        <a href="#transferencia">Transferencia</a>
+        <a href="javascript:void(0)" onclick="openModal('transferenciaModal')">Transferencia</a>
     </nav>
 
     <!-- Sección de contenido que ocupa el resto de la pantalla -->
@@ -239,9 +239,11 @@
                 <h2>Ingreso de Dinero</h2>
             </div>
             <div class="modal-body">
-                <form>
+                <form th:action="@{/movimientos/ingresar}"  method="post">
                     <label for="montoIngreso">Monto a Ingresar:</label>
                     <input type="number" id="montoIngreso" name="montoIngreso" required>
+		            <button onclick="closeModal('ingresarModal')">Cerrar</button>
+		            <button type="submit">Confirmar Ingreso</button>
                 </form>
             </div>
             <div class="modal-footer">
@@ -270,5 +272,28 @@
             </div>
         </div>
     </div>
+    
+    <!-- Modal para Transferencia -->
+	<div id="transferenciaModal" class="modal">
+	    <div class="modal-content">
+	        <div class="modal-header">
+	            <span class="close" onclick="closeModal('transferenciaModal')">&times;</span>
+	            <h2>Realizar Transferencia</h2>
+	        </div>
+	        <div class="modal-body">
+	            <form>
+	                <label for="montoTransferencia">Monto a Transferir:</label>
+	                <input type="number" id="montoTransferencia" name="montoTransferencia" required>
+	                <br><br>
+	                <label for="cuentaDestino">Cuenta Destino:</label>
+	                <input type="text" id="cuentaDestino" name="cuentaDestino" required>
+	            </form>
+	        </div>
+	        <div class="modal-footer">
+	            <button onclick="closeModal('transferenciaModal')">Cerrar</button>
+	            <button type="button" onclick="closeModal('transferenciaModal')">Confirmar Transferencia</button>
+	        </div>
+	    </div>
+	</div>
 </body>
 </html>

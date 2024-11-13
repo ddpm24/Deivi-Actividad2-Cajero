@@ -1,5 +1,6 @@
 package cajeroweb.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import cajeroweb.modelo.entities.Cuenta;
 import cajeroweb.modelo.entities.Movimiento;
 import jakarta.servlet.http.HttpSession;
 
+
 @Controller
 public class HomeController {
 
@@ -23,6 +25,7 @@ public class HomeController {
 	private CuentaDao cuentaDao;
 	@Autowired
 	private MovimientoDao movimientoDao;
+	
 	
 	@GetMapping({"","/"})
 	public String home(Model model) {
@@ -56,12 +59,30 @@ public class HomeController {
 	}
 	
 	@GetMapping("/movimientos/all")
-	public String buscarTodosMovimientos(Model model) {
-	 
-	    List<Movimiento> movimientos = movimientoDao.findAll();
+	public String buscarTodosMovimientos(Model model, HttpSession session) {
+		
+		Cuenta cuenta = (Cuenta) session.getAttribute("cuenta");
+		
+	    List<Movimiento> movimientos = movimientoDao.buscarMovimientosPorIdCuenta(cuenta.getIdCuenta());
 	    model.addAttribute("movimientos", movimientos);
 
 	    return "Menu"; 
+	}
+	
+	
+	@PostMapping("/movimientos/ingresar")
+	public String procAlta(Movimiento movimiento, HttpSession session, RedirectAttributes ratt) {
+		movimiento.setOperacion("ingreso");
+		movimiento.setFecha(new Date());
+		//movimiento.setCuenta(session);
+		
+		if (movimientoDao.insertOne(movimiento) == 1)
+			ratt.addFlashAttribute("mensaje", "Producto insertado");
+		else
+			ratt.addFlashAttribute("mensaje", "Producto NOO insertado");
+		
+		
+		return "redirect:/";
 	}
 	
 	
