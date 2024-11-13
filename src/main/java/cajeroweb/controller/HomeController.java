@@ -71,18 +71,39 @@ public class HomeController {
 	
 	
 	@PostMapping("/movimientos/ingresar")
-	public String procAlta(Movimiento movimiento, HttpSession session, RedirectAttributes ratt) {
+	public String procIngresar(Movimiento movimiento, HttpSession session, RedirectAttributes ratt) {
+		Cuenta cuenta = (Cuenta) session.getAttribute("cuenta");
 		movimiento.setOperacion("ingreso");
 		movimiento.setFecha(new Date());
-		//movimiento.setCuenta(session);
+		movimiento.setCuenta(cuenta);
+		
+		cuenta.ingresar(movimiento.getCantidad());
 		
 		if (movimientoDao.insertOne(movimiento) == 1)
-			ratt.addFlashAttribute("mensaje", "Producto insertado");
+			ratt.addFlashAttribute("mensaje", "Operación realizada correctamente");
 		else
-			ratt.addFlashAttribute("mensaje", "Producto NOO insertado");
+			ratt.addFlashAttribute("mensaje", "Operación NOO realizada");
 		
+		buscarTodosMovimientos(ratt, session);
+		return "Menu";
+	}
+	
+	@PostMapping("/movimientos/extraer")
+	public String procExtraer(Movimiento movimiento, HttpSession session, RedirectAttributes ratt) {
+		Cuenta cuenta = (Cuenta) session.getAttribute("cuenta");
+		movimiento.setOperacion("extraccion");
+		movimiento.setFecha(new Date());
+		movimiento.setCuenta(cuenta);
 		
-		return "redirect:/";
+		cuenta.extraer(movimiento.getCantidad());
+		
+		if (movimientoDao.insertOne(movimiento) == 1)
+			ratt.addFlashAttribute("mensaje", "Operación realizada correctamente");
+		else
+			ratt.addFlashAttribute("mensaje", "Operación NOO realizada");
+		
+		buscarTodosMovimientos(ratt, session);
+		return "Menu";
 	}
 	
 	

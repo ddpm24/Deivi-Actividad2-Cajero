@@ -241,14 +241,13 @@
             <div class="modal-body">
                 <form th:action="@{/movimientos/ingresar}"  method="post">
                     <label for="montoIngreso">Monto a Ingresar:</label>
-                    <input type="number" id="montoIngreso" name="montoIngreso" required>
+                    <input type="number" id="montoIngreso" name="cantidad" required>
 		            <button onclick="closeModal('ingresarModal')">Cerrar</button>
 		            <button type="submit">Confirmar Ingreso</button>
                 </form>
             </div>
             <div class="modal-footer">
                 <button onclick="closeModal('ingresarModal')">Cerrar</button>
-                <button type="submit">Confirmar Ingreso</button>
             </div>
         </div>
     </div>
@@ -261,14 +260,14 @@
                 <h2>Extracción de Dinero</h2>
             </div>
             <div class="modal-body">
-                <form>
+                <form th:action="@{/movimientos/extraer}" method="post">
                     <label for="montoExtraer">Monto a Extraer:</label>
-                    <input type="number" id="montoExtraer" name="montoExtraer" required>
+                    <input type="number" id="montoExtraer" name="cantidad" required>
+                    <button type="submit">Confirmar Extracción</button>
                 </form>
             </div>
             <div class="modal-footer">
                 <button onclick="closeModal('extraerModal')">Cerrar</button>
-                <button type="submit">Confirmar Extracción</button>
             </div>
         </div>
     </div>
