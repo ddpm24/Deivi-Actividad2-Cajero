@@ -78,6 +78,7 @@ public class HomeController {
 		movimiento.setCuenta(cuenta);
 		
 		cuenta.ingresar(movimiento.getCantidad());
+		cuentaDao.insertOne(cuenta);
 		
 		if (movimientoDao.insertOne(movimiento) == 1)
 			ratt.addFlashAttribute("mensaje", "Operación realizada correctamente");
@@ -96,8 +97,40 @@ public class HomeController {
 		movimiento.setCuenta(cuenta);
 		
 		cuenta.extraer(movimiento.getCantidad());
+		cuentaDao.insertOne(cuenta);
 		
 		if (movimientoDao.insertOne(movimiento) == 1)
+			ratt.addFlashAttribute("mensaje", "Operación realizada correctamente");
+		else
+			ratt.addFlashAttribute("mensaje", "Operación NOO realizada");
+		
+		buscarTodosMovimientos(ratt, session);
+		return "Menu";
+	}
+	
+	@PostMapping("/movimientos/transferir")
+	public String procTransferir(@RequestParam long idCuenta, Movimiento movimientoOrigen, HttpSession session, RedirectAttributes ratt) {
+		
+		Movimiento movimientoDestino = new Movimiento();
+		Cuenta cuentaDestino = cuentaDao.buscarPorIdCuenta(idCuenta);
+		
+		Cuenta cuentaOrigen = (Cuenta) session.getAttribute("cuenta");
+		movimientoOrigen.setOperacion("extraccion");
+		movimientoOrigen.setFecha(new Date());
+		movimientoOrigen.setCuenta(cuentaOrigen);
+		
+		movimientoDestino.setCuenta(cuentaDestino);
+		movimientoDestino.setOperacion("ingreso");
+		movimientoDestino.setFecha(new Date());
+		movimientoDestino.setCantidad(movimientoOrigen.getCantidad());
+		
+		cuentaOrigen.extraer(movimientoOrigen.getCantidad());
+		cuentaDestino.ingresar(movimientoOrigen.getCantidad());
+		
+		cuentaDao.insertOne(cuentaOrigen);
+		cuentaDao.insertOne(cuentaDestino);
+		
+		if (movimientoDao.insertOne(movimientoOrigen) == 1 && movimientoDao.insertOne(movimientoDestino) == 1)
 			ratt.addFlashAttribute("mensaje", "Operación realizada correctamente");
 		else
 			ratt.addFlashAttribute("mensaje", "Operación NOO realizada");
