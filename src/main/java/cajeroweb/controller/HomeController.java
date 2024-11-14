@@ -28,8 +28,10 @@ public class HomeController {
 	
 	
 	@GetMapping({"","/"})
-	public String home(Model model) {
+	public String home(Model model, HttpSession session) {
+		
 		return "FormLogin";
+		
 	}
 	
 	
@@ -40,6 +42,7 @@ public class HomeController {
 		
 		Cuenta cuenta = cuentaDao.buscarPorIdCuenta(idCuenta);
 		
+			
 		if (cuenta != null) {
 			
 			session.setAttribute("cuenta", cuenta);
@@ -52,6 +55,16 @@ public class HomeController {
 		
 	}
 	
+	//para cerrar sesion
+	@GetMapping("/logout")
+ 	public String cerrarSesion(HttpSession sesion) {
+ 		sesion.removeAttribute("cuenta");
+ 		sesion.invalidate();
+ 		return "redirect:/";
+ 		
+ 	}
+	
+		
 	@GetMapping("/menu")
 	public String mostrarMenu() {
 		
@@ -110,7 +123,7 @@ public class HomeController {
 	
 	@PostMapping("/movimientos/transferir")
 	public String procTransferir(@RequestParam long idCuenta, Movimiento movimientoOrigen, HttpSession session, RedirectAttributes ratt) {
-		
+		System.out.println(movimientoOrigen);
 		Movimiento movimientoDestino = new Movimiento();
 		Cuenta cuentaDestino = cuentaDao.buscarPorIdCuenta(idCuenta);
 		
@@ -127,6 +140,7 @@ public class HomeController {
 		cuentaOrigen.extraer(movimientoOrigen.getCantidad());
 		cuentaDestino.ingresar(movimientoOrigen.getCantidad());
 		
+		System.out.println("Destino "+ movimientoDestino);
 		cuentaDao.insertOne(cuentaOrigen);
 		cuentaDao.insertOne(cuentaDestino);
 		
