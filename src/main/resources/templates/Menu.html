@@ -314,6 +314,28 @@ form {
     color: #dc3545 !important;
     font-weight: bold;
 }
+
+/* Estilo para hacer visible el modal cuando se activa */
+.modal.open {
+    display: block;  /* Hace visible el modal */
+}
+
+/* Estilo para el mensaje de error dentro del modal */
+.mensaje-error {
+    background-color: #f8d7da; /* Color de fondo suave para el error */
+    color: #721c24; /* Texto rojo oscuro para indicar el error */
+    border: 1px solid #f5c6cb; /* Borde rojo claro */
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+    font-size: 16px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Sombra sutil */
+}
+
+/* Para que el mensaje de error sea bien visible */
+.mensaje-error span {
+    font-weight: bold;
+}
 </style>
 <script>
 	
@@ -443,28 +465,34 @@ form {
         </div>
     </div>
     
-    <!-- Modal para Transferencia -->
-	<div id="transferenciaModal" class="modal">
-	    <div class="modal-content">
-	        <div class="modal-header">
-	            <span class="close" onclick="closeModal('transferenciaModal')">&times;</span>
-	            <h2>Realizar Transferencia</h2>
-	        </div>
-	        <div class="modal-body">
-	            <form th:action="@{/movimientos/transferir}" method="post">
-	                <label for="montoTransferencia">Monto a Transferir:</label>
-	                <input type="number" id="montoTransferencia" name="cantidad" required>
-	                <br><br>
-	                <label for="cuentaDestino">Cuenta Destino:</label>
-	                <input type="text" id="cuentaDestino" name="idCuenta" required>
-	                <button type="submit">Confirmar Transferencia</button>
-	            </form>
-	        </div>
-	        <div class="modal-footer">
-	            <button onclick="closeModal('transferenciaModal')">Cerrar</button>
-	        </div>
-	    </div>
-	</div>
+<!-- Modal para Transferencia -->
+<div id="transferenciaModal" class="modal" th:classappend="${mensajeError != null ? ' open' : ''}">
+    <div class="modal-content">
+        <div class="modal-header">
+            <span class="close" onclick="closeModal('transferenciaModal')">&times;</span>
+            <h2>Realizar Transferencia</h2>
+        </div>
+        <div class="modal-body">
+            <!-- Mostrar mensaje de error si la cuenta no existe -->
+            <div th:if="${mensajeError != null}" class="mensaje-error">
+                <span th:text="${mensajeError}"></span>
+            </div>
+            
+            <!-- Formulario de transferencia -->
+            <form th:action="@{/movimientos/transferir}" method="post">
+                <label for="montoTransferencia">Monto a Transferir:</label>
+                <input type="number" id="montoTransferencia" name="cantidad" required>
+                <br><br>
+                <label for="cuentaDestino">Cuenta Destino:</label>
+                <input type="text" id="cuentaDestino" name="idCuenta" required>
+                <button type="submit">Confirmar Transferencia</button>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button onclick="closeModal('transferenciaModal')">Cerrar</button>
+        </div>
+    </div>
+</div>
 	
 </body>
 </html>

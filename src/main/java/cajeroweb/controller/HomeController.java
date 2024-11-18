@@ -120,32 +120,41 @@ public class HomeController {
 	}
 	
 	@PostMapping("/movimientos/transferir")
-	public String procTransferir(@RequestParam long idCuenta, Movimiento movimientoOrigen, HttpSession session, Model model) {
-		System.out.println(movimientoOrigen);
-		Movimiento movimientoDestino = new Movimiento();
-		Cuenta cuentaDestino = cuentaDao.buscarPorIdCuenta(idCuenta);
-		
-		Cuenta cuentaOrigen = (Cuenta) session.getAttribute("cuenta");
-		movimientoOrigen.setOperacion("extraccion");
-		movimientoOrigen.setFecha(new Date());
-		movimientoOrigen.setCuenta(cuentaOrigen);
-		
-		movimientoDestino.setCuenta(cuentaDestino);
-		movimientoDestino.setOperacion("ingreso");
-		movimientoDestino.setFecha(new Date());
-		movimientoDestino.setCantidad(movimientoOrigen.getCantidad());
-		
+	public String procTransferir(@RequestParam long idCuenta, Movimiento movimientoOrigen, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+	    System.out.println(movimientoOrigen);
+	    Movimiento movimientoDestino = new Movimiento();
 
-		if (cuentaOrigen.extraer(movimientoOrigen.getCantidad()) && cuentaDestino.ingresar(movimientoOrigen.getCantidad()) &&
-				movimientoDao.insertOne(movimientoOrigen) == 1 && movimientoDao.insertOne(movimientoDestino) == 1 && 
-				cuentaDao.insertOne(cuentaOrigen) != null && cuentaDao.insertOne(cuentaDestino)!= null)
-			model.addAttribute("mensajePositivo", "Transferencia realizada correctamente");
-		else
-			model.addAttribute("mensajeNegativo", "Operación NOO realizada");
-		
-		buscarTodosMovimientos(model, session);
-		return "Menu";
+	    Cuenta cuentaDestino = cuentaDao.buscarPorIdCuenta(idCuenta);
+	    if (cuentaDestino == null) {
+	    	redirectAttributes.addFlashAttribute("mensajeError", "La cuenta no existe");
+	        return "redirect:/menu"; 
+	    }
+
+	    Cuenta cuentaOrigen = (Cuenta) session.getAttribute("cuenta");
+	    movimientoOrigen.setOperacion("extraccion");
+	    movimientoOrigen.setFecha(new Date());
+	    movimientoOrigen.setCuenta(cuentaOrigen);
+
+	    movimientoDestino.setCuenta(cuentaDestino);
+	    movimientoDestino.setOperacion("ingreso");
+	    movimientoDestino.setFecha(new Date());
+	    movimientoDestino.setCantidad(movimientoOrigen.getCantidad());
+
+	    if (cuentaOrigen.getSaldo() < movimientoOrigen.getCantidad()) {
+	    	redirectAttributes.addFlashAttribute("mensajeError", "No tiene saldo suficiente");
+	        return "redirect:/menu"; 
+	    }
+	    
+	    if (cuentaOrigen.extraer(movimientoOrigen.getCantidad()) && cuentaDestino.ingresar(movimientoOrigen.getCantidad()) &&
+	        movimientoDao.insertOne(movimientoOrigen) == 1 && movimientoDao.insertOne(movimientoDestino) == 1 &&
+	        cuentaDao.insertOne(cuentaOrigen) != null && cuentaDao.insertOne(cuentaDestino) != null) {
+	        model.addAttribute("mensajePositivo", "Transferencia realizada correctamente");
+	    } else {
+	        model.addAttribute("mensajeNegativo", "Operación NO realizada");
+	    }
+
+	    buscarTodosMovimientos(model, session);
+	    return "Menu";
 	}
-	
 	
 }
