@@ -84,45 +84,43 @@ public class HomeController {
 	
 	
 	@PostMapping("/movimientos/ingresar")
-	public String procIngresar(Movimiento movimiento, HttpSession session, RedirectAttributes ratt) {
-		Cuenta cuenta = (Cuenta) session.getAttribute("cuenta");
-		movimiento.setOperacion("ingreso");
-		movimiento.setFecha(new Date());
-		movimiento.setCuenta(cuenta);
-		
-		cuenta.ingresar(movimiento.getCantidad());
-		cuentaDao.insertOne(cuenta);
-		
-		if (movimientoDao.insertOne(movimiento) == 1)
-			ratt.addFlashAttribute("mensaje", "Operación realizada correctamente");
-		else
-			ratt.addFlashAttribute("mensaje", "Operación NOO realizada");
-		
-		buscarTodosMovimientos(ratt, session);
-		return "Menu";
+	public String procIngresar(Movimiento movimiento, HttpSession session, Model model) {
+	    Cuenta cuenta = (Cuenta) session.getAttribute("cuenta");
+	    movimiento.setOperacion("ingreso");
+	    movimiento.setFecha(new Date());
+	    movimiento.setCuenta(cuenta);
+	    
+	    if (cuenta.ingresar(movimiento.getCantidad())) {
+	    	model.addAttribute("mensajeMovimiento", "Ingreso realizado correctamente");
+	    } else {
+	    	model.addAttribute("mensajeMovimiento", "Operación NO realizada");
+	    }
+	    
+	    movimientoDao.insertOne(movimiento);
+	    cuentaDao.insertOne(cuenta);
+	    
+	    return "Menu";  
 	}
 	
 	@PostMapping("/movimientos/extraer")
-	public String procExtraer(Movimiento movimiento, HttpSession session, RedirectAttributes ratt) {
+	public String procExtraer(Movimiento movimiento, HttpSession session, Model model) {
 		Cuenta cuenta = (Cuenta) session.getAttribute("cuenta");
 		movimiento.setOperacion("extraccion");
 		movimiento.setFecha(new Date());
 		movimiento.setCuenta(cuenta);
 		
-		cuenta.extraer(movimiento.getCantidad());
-		cuentaDao.insertOne(cuenta);
 		
-		if (movimientoDao.insertOne(movimiento) == 1)
-			ratt.addFlashAttribute("mensaje", "Operación realizada correctamente");
+		if (cuenta.extraer(movimiento.getCantidad()) && movimientoDao.insertOne(movimiento) == 1 && cuentaDao.insertOne(cuenta) != null)
+			model.addAttribute("mensajeMovimiento", "Extracción realizada correctamente");
 		else
-			ratt.addFlashAttribute("mensaje", "Operación NOO realizada");
+			model.addAttribute("mensajeMovimiento", "Operación NOO realizada");
 		
-		buscarTodosMovimientos(ratt, session);
+		buscarTodosMovimientos(model, session);
 		return "Menu";
 	}
 	
 	@PostMapping("/movimientos/transferir")
-	public String procTransferir(@RequestParam long idCuenta, Movimiento movimientoOrigen, HttpSession session, RedirectAttributes ratt) {
+	public String procTransferir(@RequestParam long idCuenta, Movimiento movimientoOrigen, HttpSession session, Model model) {
 		System.out.println(movimientoOrigen);
 		Movimiento movimientoDestino = new Movimiento();
 		Cuenta cuentaDestino = cuentaDao.buscarPorIdCuenta(idCuenta);
@@ -137,19 +135,15 @@ public class HomeController {
 		movimientoDestino.setFecha(new Date());
 		movimientoDestino.setCantidad(movimientoOrigen.getCantidad());
 		
-		cuentaOrigen.extraer(movimientoOrigen.getCantidad());
-		cuentaDestino.ingresar(movimientoOrigen.getCantidad());
-		
-		System.out.println("Destino "+ movimientoDestino);
-		cuentaDao.insertOne(cuentaOrigen);
-		cuentaDao.insertOne(cuentaDestino);
-		
-		if (movimientoDao.insertOne(movimientoOrigen) == 1 && movimientoDao.insertOne(movimientoDestino) == 1)
-			ratt.addFlashAttribute("mensaje", "Operación realizada correctamente");
+
+		if (cuentaOrigen.extraer(movimientoOrigen.getCantidad()) && cuentaDestino.ingresar(movimientoOrigen.getCantidad()) &&
+				movimientoDao.insertOne(movimientoOrigen) == 1 && movimientoDao.insertOne(movimientoDestino) == 1 && 
+				cuentaDao.insertOne(cuentaOrigen) != null && cuentaDao.insertOne(cuentaDestino)!= null)
+			model.addAttribute("mensajeMovimiento", "Transferencia realizada correctamente");
 		else
-			ratt.addFlashAttribute("mensaje", "Operación NOO realizada");
+			model.addAttribute("mensajeMovimiento", "Operación NOO realizada");
 		
-		buscarTodosMovimientos(ratt, session);
+		buscarTodosMovimientos(model, session);
 		return "Menu";
 	}
 	

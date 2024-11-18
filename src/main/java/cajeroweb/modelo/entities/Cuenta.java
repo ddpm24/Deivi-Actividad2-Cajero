@@ -106,8 +106,9 @@ public class Cuenta implements Serializable {
 		return "Cuenta [idCuenta=" + idCuenta + ", saldo=" + saldo + ", tipoCuenta=" + tipoCuenta + "]";
 	}
 			
-	public void ingresar(double monto) {
+	public boolean ingresar(double monto) {
 		saldo += monto;
+		return true;
 	}
 	
 	public boolean extraer(double monto) {

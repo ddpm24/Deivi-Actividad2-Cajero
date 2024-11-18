@@ -236,9 +236,44 @@ form {
     text-align: center;
 }
     
+.toast-message {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: rgba(0, 128, 0, 0.9); /* Fondo semitransparente verde */
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    font-size: 16px;
+    animation: fadeout 3s forwards; /* Animación para desaparecer */
+}
 
+@keyframes fadeout {
+    0% {
+        opacity: 1;
+    }
+    80% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        display: none;
+    }
+}
+
+.text-green {
+    color: #28a745 !important;
+    font-weight: bold;
+}
+.text-red {
+    color: #dc3545 !important;
+    font-weight: bold;
+}
 </style>
 <script>
+	
 	//Mostrar la tabla si contiene datos
 	document.addEventListener("DOMContentLoaded", function() {
 	    var table = document.getElementById("movimientosTable");
@@ -267,6 +302,16 @@ form {
             }
         }
     };
+    
+ 	// Mostrar el mensaje acada vez que se hace un movimiento
+    document.addEventListener("DOMContentLoaded", function () {
+        var toastMessage = document.getElementById("toastMessage");
+        if (toastMessage) {
+            setTimeout(function () {
+                toastMessage.remove();
+            }, 6000); 
+        }
+    });
 </script>
 </head>
 <body>
@@ -282,23 +327,33 @@ form {
 
     <!-- Sección de contenido que ocupa el resto de la pantalla -->
     <section class="content">
+    
+    
         <!-- Información de cuenta y saldo con estilo mejorado -->
-        <h3>Cuenta: <span th:text="${session.cuenta.idCuenta}"></span></h3>
+        <h3>Bienvenido, tu cuenta es la: <span th:text="${session.cuenta.idCuenta}"></span></h3>
         <h3>Saldo: <span th:text="${session.cuenta.saldo}"></span></h3>
         
+        
+         <!-- Div para mostrar mensajes -->
+        <div id="toastMessage" th:if="${mensajeMovimiento != null}" class="toast-message">
+    		<span th:text="${mensajeMovimiento}"></span>
+		</div>
+        
         <!-- Tabla de movimientos -->
-        <table id="movimientosTable" th:if="${movimientos != null && !movimientos.isEmpty()}">
-            <tr>
-                <th>Cantidad</th>
-                <th>Fecha</th>
-                <th>Tipo</th>
-            </tr>
-            <tr th:each="ele : ${movimientos}">
-                <td th:text="${ele.cantidad}"></td>
-                <td th:text="${ele.fecha}"></td>
-                <td th:text="${ele.operacion}"></td>
-            </tr>
-        </table>
+<table id="movimientosTable" th:if="${movimientos != null && !movimientos.isEmpty()}">
+    <tr>
+        <th>Cantidad</th>
+        <th>Fecha</th>
+        <th>Tipo</th>
+    </tr>
+    <tr th:each="ele : ${movimientos}">
+    <td th:classappend="${ele.operacion == 'ingreso'} ? 'text-green' : 
+                        (${ele.operacion == 'extraccion'} ? 'text-red' : '')"
+        th:text="${ele.cantidad}"></td>
+    <td th:text="${ele.fecha}"></td>
+    <td th:text="${ele.operacion}"></td>
+</tr>
+</table>
     </section>
     
     <!-- Modal para Ingresar -->
@@ -363,5 +418,6 @@ form {
 	        </div>
 	    </div>
 	</div>
+	
 </body>
 </html>
