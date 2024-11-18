@@ -6,62 +6,83 @@
 <title>Menú de Opciones</title>
 <style>
     /* Configuración básica de estilo */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: Arial, sans-serif;
-    }
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
 
-    /* Estructura general de la página */
-    body {
-        display: flex;
-        flex-direction: column;
-        min-height: 100vh;
-        background-color: #f5f5f5;
-    }
+/* Estructura general de la página */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f7f7f7; /* Color de fondo más suave */
+}
 
-    /* Barra de navegación fija en la parte superior */
-    .menu {
-        display: flex;
-        justify-content: center;
-        background-color: #007bff;
-        padding: 15px 20px;
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        z-index: 1;
-    }
+/* Barra de navegación fija en la parte superior */
+.menu {
+    display: flex;
+    justify-content: flex-start; /* Alinea los elementos al inicio */
+    background-color: #007bff;
+    padding: 15px 20px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    width: 100%;
+}
 
-    /* Enlaces de navegación */
-    .menu a {
-        color: white;
-        text-decoration: none;
-        padding: 10px 20px;
-        margin: 0 5px;
-        border-radius: 5px;
-        transition: background-color 0.3s ease;
-    }
+/* Enlaces de navegación */
+.menu a {
+    color: white;
+    text-decoration: none;
+    padding: 10px 20px;
+    margin: 0 10px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
 
-    /* Efecto hover en los enlaces */
-    .menu a:hover {
-        background-color: #0056b3;
-    }
+/* Efecto hover en los enlaces */
+.menu a:hover {
+    background-color: #0056b3; 
+}
 
-    /* Sección de contenido principal */
-    .content {
-        flex: 1;
-        margin-top: 70px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        padding: 20px;
-        background-color: #e9ecef;
-    }
+/* Alineación del botón Cerrar Sesión a la derecha */
+.menu .logout-button {
+    margin-left: auto; /* Mueve el botón hacia la derecha */
+    color: white; 
+    background-color: #e63946; /* Rojo suave para armonizar con la paleta */
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: background-color 0.3s ease;
+}
 
+/* Efectos en el hover y clic del botón de Cerrar Sesión */
+.menu .logout-button:hover {
+    background-color: #d00000; /* Rojo más oscuro */
+}
+
+.menu .logout-button:active {
+    background-color: #9b0000; /* Rojo intenso al hacer clic */
+}
+
+/* Sección de contenido principal */
+.content {
+    flex: 1;
+    margin-top: 70px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background-color: #e9ecef; /* Fondo gris suave para el contenido */
+}
     /* Estilo de los encabezados h3 */
     h3 {
         color: #333;
@@ -236,11 +257,12 @@ form {
     text-align: center;
 }
     
+/* Estilo base para el mensaje */
 .toast-message {
     position: fixed;
     top: 20px;
     right: 20px;
-    background-color: rgba(0, 128, 0, 0.9); /* Fondo semitransparente verde */
+    background-color: rgba(128, 128, 128, 0.9); /* Fondo neutro gris */
     color: white;
     padding: 10px 20px;
     border-radius: 5px;
@@ -248,6 +270,27 @@ form {
     z-index: 1000;
     font-size: 16px;
     animation: fadeout 3s forwards; /* Animación para desaparecer */
+}
+
+/* Clase adicional para mensajes positivos */
+.toast-message.positive {
+    background-color: rgba(34, 139, 34, 0.9); /* Verde más suave para mensajes positivos */
+}
+
+/* Clase adicional para mensajes negativos */
+.toast-message.negative {
+    background-color: rgba(255, 69, 58, 0.9); /* Rojo más suave para mensajes negativos */
+}
+
+/* Animación para hacer desaparecer el mensaje después de un tiempo */
+@keyframes fadeout {
+    0% {
+        opacity: 1;
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(20px);
+    }
 }
 
 @keyframes fadeout {
@@ -318,12 +361,12 @@ form {
 
     <!-- Menú de navegación fijo en la parte superior -->
     <nav class="menu">
-        <a href="javascript:void(0)" onclick="openModal('ingresarModal')">Ingresar</a>
-        <a href="javascript:void(0)" onclick="openModal('extraerModal')">Extraer</a>
-        <a th:href="@{/movimientos/all}">Ver Movimientos</a>
-        <a href="javascript:void(0)" onclick="openModal('transferenciaModal')">Transferencia</a>
-        <a th:href="@{/logout}">Cerrar Sesion</a>
-    </nav>
+    	<a href="javascript:void(0)" onclick="openModal('ingresarModal')">Ingresar</a>
+    	<a href="javascript:void(0)" onclick="openModal('extraerModal')">Extraer</a>
+    	<a th:href="@{/movimientos/all}">Ver Movimientos</a>
+    	<a href="javascript:void(0)" onclick="openModal('transferenciaModal')">Transferencia</a>
+    	<a th:href="@{/logout}" class="logout-button">Cerrar Sesion</a>
+	</nav>
 
     <!-- Sección de contenido que ocupa el resto de la pantalla -->
     <section class="content">
@@ -334,10 +377,14 @@ form {
         <h3>Saldo: <span th:text="${session.cuenta.saldo}"></span></h3>
         
         
-         <!-- Div para mostrar mensajes -->
-        <div id="toastMessage" th:if="${mensajeMovimiento != null}" class="toast-message">
-    		<span th:text="${mensajeMovimiento}"></span>
-		</div>
+        <!-- Div para mostrar mensajes -->
+<div id="toastMessage" 
+     th:if="${mensajePositivo != null or mensajeNegativo != null}" 
+     class="toast-message" 
+     th:classappend="${mensajePositivo != null} ? ' positive' : 
+                      (mensajeNegativo != null ? ' negative' : '')">
+    <span th:text="${mensajePositivo != null ? mensajePositivo : mensajeNegativo}"></span>
+</div>
         
         <!-- Tabla de movimientos -->
 <table id="movimientosTable" th:if="${movimientos != null && !movimientos.isEmpty()}">

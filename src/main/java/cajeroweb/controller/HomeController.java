@@ -91,9 +91,9 @@ public class HomeController {
 	    movimiento.setCuenta(cuenta);
 	    
 	    if (cuenta.ingresar(movimiento.getCantidad())) {
-	    	model.addAttribute("mensajeMovimiento", "Ingreso realizado correctamente");
+	    	model.addAttribute("mensajePositivo", "Ingreso realizado correctamente");
 	    } else {
-	    	model.addAttribute("mensajeMovimiento", "Operación NO realizada");
+	    	model.addAttribute("mensajeNegativo", "Operación NO realizada");
 	    }
 	    
 	    movimientoDao.insertOne(movimiento);
@@ -111,9 +111,9 @@ public class HomeController {
 		
 		
 		if (cuenta.extraer(movimiento.getCantidad()) && movimientoDao.insertOne(movimiento) == 1 && cuentaDao.insertOne(cuenta) != null)
-			model.addAttribute("mensajeMovimiento", "Extracción realizada correctamente");
+			model.addAttribute("mensajePositivo", "Extracción realizada correctamente");
 		else
-			model.addAttribute("mensajeMovimiento", "Operación NOO realizada");
+			model.addAttribute("mensajeNegativo", "Operación NOO realizada");
 		
 		buscarTodosMovimientos(model, session);
 		return "Menu";
@@ -139,9 +139,9 @@ public class HomeController {
 		if (cuentaOrigen.extraer(movimientoOrigen.getCantidad()) && cuentaDestino.ingresar(movimientoOrigen.getCantidad()) &&
 				movimientoDao.insertOne(movimientoOrigen) == 1 && movimientoDao.insertOne(movimientoDestino) == 1 && 
 				cuentaDao.insertOne(cuentaOrigen) != null && cuentaDao.insertOne(cuentaDestino)!= null)
-			model.addAttribute("mensajeMovimiento", "Transferencia realizada correctamente");
+			model.addAttribute("mensajePositivo", "Transferencia realizada correctamente");
 		else
-			model.addAttribute("mensajeMovimiento", "Operación NOO realizada");
+			model.addAttribute("mensajeNegativo", "Operación NOO realizada");
 		
 		buscarTodosMovimientos(model, session);
 		return "Menu";
