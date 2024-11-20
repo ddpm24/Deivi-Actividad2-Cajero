@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Objects;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import jakarta.persistence.Column;
@@ -28,6 +30,7 @@ public class Movimiento implements Serializable {
 	@Column(name="id_movimiento")
 	private int idMovimiento;
 	@Temporal(TemporalType.TIMESTAMP)
+	@DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
 	private Date fecha;
 	private double cantidad;
 	private String operacion;

@@ -103,19 +103,22 @@ public class HomeController {
 	}
 	
 	@PostMapping("/movimientos/extraer")
-	public String procExtraer(Movimiento movimiento, HttpSession session, Model model) {
+	public String procExtraer(Movimiento movimiento, HttpSession session, Model model, RedirectAttributes redirectAttributes) {
 		Cuenta cuenta = (Cuenta) session.getAttribute("cuenta");
 		movimiento.setOperacion("extraccion");
 		movimiento.setFecha(new Date());
 		movimiento.setCuenta(cuenta);
 		
+		if (cuenta.getSaldo() < movimiento.getCantidad()) {
+	    	redirectAttributes.addFlashAttribute("mensajeErrorExtracion", "No tiene saldo suficiente");
+	        return "redirect:/menu"; 
+	    }
 		
 		if (cuenta.extraer(movimiento.getCantidad()) && movimientoDao.insertOne(movimiento) == 1 && cuentaDao.insertOne(cuenta) != null)
 			model.addAttribute("mensajePositivo", "Extracción realizada correctamente");
 		else
 			model.addAttribute("mensajeNegativo", "Operación NOO realizada");
 		
-		buscarTodosMovimientos(model, session);
 		return "Menu";
 	}
 	
@@ -125,23 +128,29 @@ public class HomeController {
 	    Movimiento movimientoDestino = new Movimiento();
 
 	    Cuenta cuentaDestino = cuentaDao.buscarPorIdCuenta(idCuenta);
+	    Cuenta cuentaOrigen = (Cuenta) session.getAttribute("cuenta");
+	    
 	    if (cuentaDestino == null) {
-	    	redirectAttributes.addFlashAttribute("mensajeError", "La cuenta no existe");
+	    	redirectAttributes.addFlashAttribute("mensajeErrorTransferencia", "La cuenta no existe");
 	        return "redirect:/menu"; 
 	    }
+	    if (cuentaDestino.getIdCuenta() == cuentaOrigen.getIdCuenta()) {
+	    	redirectAttributes.addFlashAttribute("mensajeErrorTransferencia", "No puedes transferir a tu propia cuenta");
+	        return "redirect:/menu";
+	    }
+	    
 
-	    Cuenta cuentaOrigen = (Cuenta) session.getAttribute("cuenta");
-	    movimientoOrigen.setOperacion("extraccion");
+	    movimientoOrigen.setOperacion("transferencia extraccion");
 	    movimientoOrigen.setFecha(new Date());
 	    movimientoOrigen.setCuenta(cuentaOrigen);
 
 	    movimientoDestino.setCuenta(cuentaDestino);
-	    movimientoDestino.setOperacion("ingreso");
+	    movimientoDestino.setOperacion("transferencia ingreso");
 	    movimientoDestino.setFecha(new Date());
 	    movimientoDestino.setCantidad(movimientoOrigen.getCantidad());
 
 	    if (cuentaOrigen.getSaldo() < movimientoOrigen.getCantidad()) {
-	    	redirectAttributes.addFlashAttribute("mensajeError", "No tiene saldo suficiente");
+	    	redirectAttributes.addFlashAttribute("mensajeErrorTransferencia", "No tiene saldo suficiente");
 	        return "redirect:/menu"; 
 	    }
 	    

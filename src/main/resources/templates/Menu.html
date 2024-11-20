@@ -416,8 +416,10 @@ form {
         <th>Tipo</th>
     </tr>
     <tr th:each="ele : ${movimientos}">
-    <td th:classappend="${ele.operacion == 'ingreso'} ? 'text-green' : 
-                        (${ele.operacion == 'extraccion'} ? 'text-red' : '')"
+    <td th:classappend="${ele.operacion == 'ingreso' ? 'text-green' : 
+                        (ele.operacion == 'extraccion' ? 'text-red' : 
+                        (ele.operacion == 'transferencia ingreso' ? 'text-green' : 
+                        (ele.operacion == 'transferencia extraccion' ? 'text-red' : '')))}"
         th:text="${ele.cantidad}"></td>
     <td th:text="${ele.fecha}"></td>
     <td th:text="${ele.operacion}"></td>
@@ -446,13 +448,17 @@ form {
     </div>
 
     <!-- Modal para Extraer -->
-    <div id="extraerModal" class="modal">
+    <div id="extraerModal" class="modal" th:classappend="${mensajeErrorExtracion != null ? ' open' : ''}">
         <div class="modal-content">
             <div class="modal-header">
                 <span class="close" onclick="closeModal('extraerModal')">&times;</span>
                 <h2>Extracción de Dinero</h2>
             </div>
             <div class="modal-body">
+	            <!-- Mostrar mensaje de error -->
+	            <div th:if="${mensajeErrorExtracion != null}" class="mensaje-error">
+	                <span th:text="${mensajeErrorExtracion}"></span>
+	            </div>
                 <form th:action="@{/movimientos/extraer}" method="post">
                     <label for="montoExtraer">Monto a Extraer:</label>
                     <input type="number" id="montoExtraer" name="cantidad" required>
@@ -466,16 +472,16 @@ form {
     </div>
     
 <!-- Modal para Transferencia -->
-<div id="transferenciaModal" class="modal" th:classappend="${mensajeError != null ? ' open' : ''}">
+<div id="transferenciaModal" class="modal" th:classappend="${mensajeErrorTransferencia != null ? ' open' : ''}">
     <div class="modal-content">
         <div class="modal-header">
             <span class="close" onclick="closeModal('transferenciaModal')">&times;</span>
             <h2>Realizar Transferencia</h2>
         </div>
-        <div class="modal-body">
-            <!-- Mostrar mensaje de error si la cuenta no existe -->
-            <div th:if="${mensajeError != null}" class="mensaje-error">
-                <span th:text="${mensajeError}"></span>
+        	<div class="modal-body">
+            <!-- Mostrar mensaje de error -->
+            <div th:if="${mensajeErrorTransferencia != null}" class="mensaje-error">
+                <span th:text="${mensajeErrorTransferencia}"></span>
             </div>
             
             <!-- Formulario de transferencia -->
